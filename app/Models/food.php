@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Storage;
 
-class food extends Model
+class Food extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'name', 'description','ingredients','price','rate','types','picturePath'
+        'name', 'description', 'ingredients', 'price', 'rate', 'types', 'picturePath'
     ];
 
     public function getCreatedAtAttribute($value)
@@ -32,7 +32,6 @@ class food extends Model
     }
     public function getpicturePathAttribute()
     {
-        return url('').Storage::url($this->attributes['picturePath']);
+        return url('') . Storage::url($this->attributes['picturePath']);
     }
-
 }

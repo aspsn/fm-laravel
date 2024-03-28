@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Actions\Fortify\PasswordValidationRules;
-use App\Models\User;
 
 
 class UserRequest extends FormRequest
@@ -28,14 +27,14 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required','string','max:255'],
-            'email'=> ['required','string','email','max:255','unique:users'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
             'address' => ['required', 'string'],
-            'roles' => ['required', 'string','max:255', 'in:USER,ADMIN'],
-            'houseNumber' => ['required','string','max:255'],
-            'phoneNumber' => ['required','string','max:255'],
-            'city' => ['required','string','max:255'],
+            'roles' => ['required', 'string', 'max:255', 'in:USER,ADMIN'],
+            'houseNumber' => ['required', 'string', 'max:255'],
+            'phoneNumber' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
         ];
     }
 }

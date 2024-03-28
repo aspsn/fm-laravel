@@ -18,23 +18,22 @@ class UserController extends Controller
     use PasswordValidationRules;
 
     public function login(Request $request)
-    { 
-        try{
+    {
+        try {
             /*// Validasi input
             $request->validate([
                 'email'=> 'email|required',
                 'password'=> 'required'
             ]);*/
 
-            $rules= [
-                'email'=> 'email|required',
-                'password'=> 'required'
+            $rules = [
+                'email' => 'email|required',
+                'password' => 'required'
             ];
 
-            $validator= Validator::make($request->all(), $rules);
-            
-            if ($validator->fails())
-            {
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
                 return ResponseFormatter::error([
                     'message' => 'error',
                     'error' => $validator->errors()
@@ -42,33 +41,31 @@ class UserController extends Controller
             }
 
             // Mengecek credentials (login)
-            $credentials = request (['email','password']);
-            if(!Auth::attempt($credentials)){
+            $credentials = request(['email', 'password']);
+            if (!Auth::attempt($credentials)) {
                 return ResponseFormatter::error([
-                    'message'=> 'Unauthorized'
+                    'message' => 'Unauthorized'
                 ], 'Authentication Failed', 500);
             }
 
             // Jika has tidak sesuai maka beri error 
             $user = User::where('email', $request->email)->first();
-            if(!Hash::check($request->password, $user->password,[])){
+            if (!Hash::check($request->password, $user->password, [])) {
                 throw new \Exception('Invalid Credentials');
             }
-            
+
             //Jika berhasil maka loginkan
             $tokenResult = $user->createToken('authToken')->plainTextToken;
-            return ResponseFormatter ::success([
-                'access_token'=> $tokenResult,
-                'token_type'=>'Bearer',
-                'user'=> $user
-            ],'Authenticated');
-
-        }
-        catch(Exception $error){
+            return ResponseFormatter::success([
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+                'user' => $user
+            ], 'Authenticated');
+        } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message'=> 'Something went wrong',
-                'error'=> $error
-            ],'Authentication Failed', 500);
+                'message' => 'Something went wrong',
+                'error' => $error
+            ], 'Authentication Failed', 500);
         }
     }
     // Fungsi untuk register
@@ -80,15 +77,14 @@ class UserController extends Controller
                 'email'=> ['required','string','email','max:255','unique:users'],
                 'password' => $this->passwordRules()
             ]);*/
-            $rules= [
-                'email'=> 'email|required',
-                'password'=> 'required'
+            $rules = [
+                'email' => 'email|required',
+                'password' => 'required'
             ];
 
-            $validator= Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules);
 
-            if ($validator->fails())
-            {
+            if ($validator->fails()) {
                 return ResponseFormatter::error([
                     'message' => 'error',
                     'error' => $validator->errors()
@@ -96,36 +92,33 @@ class UserController extends Controller
             }
 
             User::create([
-                'name'=> $request->name,
-                'email'=> $request->email,
-                'address'=> $request->address,
-                'houseNumber'=> $request->houseNumber,
-                'phoneNumber'=> $request->phoneNumber,
-                'password'=> Hash::make($request->password),
-                'city'=> $request->city,
-                
+                'name' => $request->name,
+                'email' => $request->email,
+                'address' => $request->address,
+                'houseNumber' => $request->houseNumber,
+                'phoneNumber' => $request->phoneNumber,
+                'password' => Hash::make($request->password),
+                'city' => $request->city,
+
 
             ]);
 
-            
+
             $user = User::where('email', $request->email)->first();
-            $user['current_team_id']= 1;
-            
+            $user['current_team_id'] = 1;
+
             $tokenResult = $user->createToken('authToken')->plainTextToken;
-            
-            return ResponseFormatter ::success([
-                'access_token'=> $tokenResult,
-                'token_type'=>'Bearer',
-                'user'=> $user
+
+            return ResponseFormatter::success([
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+                'user' => $user
             ]);
-
-
         } catch (Exception $error) {
             return ResponseFormatter::error([
-                'message'=> 'Something went wrong',
-                'error'=> $error
-            ],'Authentication Failed', 500);
-            
+                'message' => 'Something went wrong',
+                'error' => $error
+            ], 'Authentication Failed', 500);
         }
     }
 
@@ -139,7 +132,9 @@ class UserController extends Controller
     public function fetch(Request $request)
     {
         return ResponseFormatter::success(
-            $request->user(), 'Data profile user berhasil diambil');
+            $request->user(),
+            'Data profile user berhasil diambil'
+        );
     }
 
     public function updateProfile(Request $request)
@@ -154,28 +149,29 @@ class UserController extends Controller
 
     public function uploadPhoto(Request $request)
     {
-        $validator= Validator::make($request->all(),[
-        'file'=> 'required|image|max:2048'
-    
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|image|max:2048'
+
         ]);
-        
-        if($validator->fails())
-        {
-        return ResponseFormatter::error([
-            'error'=> $validator->errors()]
-            ,'Update photo fails', 401
-        );}
-    
-        if($request->file('file'))
-        {
-         $file-$request->file->store('assets/user','public');
-        
-        //simpan ke database urlnya
-        $user=Auth::user();
-        $user->profil_photo_path =$file;
-        $user->update();
-        return ResponseFormatter::success([$file],'File successfully uploaded');
+
+        if ($validator->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validator->errors()
+                ],
+                'Update photo fails',
+                401
+            );
         }
-    
+
+        if ($request->file('file')) {
+            $file = $request->file->store('assets/user', 'public');
+
+            //simpan ke database urlnya
+            $user = Auth::user();
+            $user->profil_photo_path = $file;
+            $user->update();
+            return ResponseFormatter::success([$file], 'File successfully uploaded');
+        }
     }
 }

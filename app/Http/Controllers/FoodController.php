@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\food;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Food;
 use App\Http\Requests\FoodRequest;
 
 
@@ -18,10 +16,10 @@ class FoodController extends Controller
      */
     public function index()
     {
-        $food = food::paginate(5);
+        $food = Food::paginate(5);
 
-        return view('food.index',[
-            'food'=> $food //$food adalah data yang dimasukan di dalam food.index
+        return view('food.index', [
+            'food' => $food //$food adalah data yang dimasukan di dalam food.index
         ]);
     }
 
@@ -32,7 +30,7 @@ class FoodController extends Controller
      */
     public function create()
     {
-        return view ('food.create');
+        return view('food.create');
     }
 
     /**
@@ -47,7 +45,7 @@ class FoodController extends Controller
 
         $data['picturePath'] = $request->file('picturePath')->store('assets/food', 'public');
 
-        food::create($data);
+        Food::create($data);
 
         return redirect()->route('food.index');
     }
@@ -71,7 +69,7 @@ class FoodController extends Controller
      */
     public function edit(Food $food)
     {
-        return view ('food.edit', [
+        return view('food.edit', [
             'item' => $food
         ]);
     }
@@ -86,9 +84,8 @@ class FoodController extends Controller
     public function update(FoodRequest $request, Food $food)
     {
         $data = $request->all();
-        if($request->file('picturePath'))
-        {
-            $data['picturePath'] = $request->file('picturePath')->store('assets/food', 'public'); 
+        if ($request->file('picturePath')) {
+            $data['picturePath'] = $request->file('picturePath')->store('assets/food', 'public');
         }
 
         $food->update($data);

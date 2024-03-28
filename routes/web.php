@@ -3,12 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\MidtransController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Middleware\IsAdmin;
-use App\Http\Controllers\UsersController;
-use App\Http\Controllers\FoodsController;
-use App\Http\Controllers\TransactionsController;
-
-
 
 
 /*
@@ -28,16 +22,16 @@ Route::get('/', function () {
 
 // Dashboard
 Route::prefix('dashboard')
-->middleware(['auth:sanctum','admin'])
-->group(function(){
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('users', UserController::class);
-    Route::resource('food', FoodController::class);
+    ->middleware(['auth:sanctum', 'admin'])
+    ->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('users', UserController::class);
+        Route::resource('food', FoodController::class);
 
-    Route::get('transactions/{id}/status/{status}', [TransactionController::class,'changeStatus'])
-        ->name('transactions.changeStatus');
-    Route::resource('transactions', TransactionController::class);
-});
+        Route::get('transactions/{id}/status/{status}', [TransactionController::class, 'changeStatus'])
+            ->name('transactions.changeStatus');
+        Route::resource('transactions', TransactionController::class);
+    });
 
 
 

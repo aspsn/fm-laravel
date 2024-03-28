@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\food;
 
 class FoodRequest extends FormRequest
 {
@@ -25,12 +24,12 @@ class FoodRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required','max:255'],
-            'picturePath' => ['required','image'],
-            'ingredients'=> ['required'],
+            'name' => ['required', 'max:255'],
+            'picturePath' => ['required', 'image'],
+            'ingredients' => ['required'],
             'description' => ['required'],
-            'price' => ['required','integer'],
-            'rate' => ['required','numeric'],
+            'price' => ['required', 'integer'],
+            'rate' => ['required', 'numeric'],
             'types' => [''],
         ];
     }

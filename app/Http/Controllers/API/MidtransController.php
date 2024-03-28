@@ -4,11 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helpers\ResponseFormatter;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Exception;
 use Midtrans\Config;
 use Midtrans\Notification;
 use App\Models\Transaction;
@@ -33,62 +28,45 @@ class MidtransController extends Controller
         $order_id = $notification->order_id;
 
         //Cari transaksi berdasarkan ID    
-        $transaction = Transaction::findOrFail($order_id); 
+        $transaction = Transaction::findOrFail($order_id);
 
         // Handle notifikasi status midtrans 
-        if($status=='capture')
-        {
-            if($type=='credit_card')
-            {
-                if($fraud == 'challenge')
-                {
-                    $transaction->status ="PENDING";
-                }
-                else
-                {
-                    $transaction->status ="SUCCESS";
+        if ($status == 'capture') {
+            if ($type == 'credit_card') {
+                if ($fraud == 'challenge') {
+                    $transaction->status = "PENDING";
+                } else {
+                    $transaction->status = "SUCCESS";
                 }
             }
-            
-        }
-        else if($status=='settlement')
-        {
-            $transaction->status ="SUCCESS";
-        }
-        else if($status=='pending')
-        {
-            $transaction->status ="PENDING";
-        }
-        else if($status=='deny')
-        {
-            $transaction->status ="CANCELLED";
-        }
-        else if($status=='expire')
-        {
-            $transaction->status ="CANCELLED";
-        }
-        else if($status=='cancel')
-        {
-            $transaction->status ="CANCELLED";
+        } else if ($status == 'settlement') {
+            $transaction->status = "SUCCESS";
+        } else if ($status == 'pending') {
+            $transaction->status = "PENDING";
+        } else if ($status == 'deny') {
+            $transaction->status = "CANCELLED";
+        } else if ($status == 'expire') {
+            $transaction->status = "CANCELLED";
+        } else if ($status == 'cancel') {
+            $transaction->status = "CANCELLED";
         }
 
         //simpan transaksi
-        $transaction=save();
+        $transaction->save();
     }
 
     public function success()
     {
-        return view ('midtrans.success');
+        return view('midtrans.success');
     }
 
     public function unfinish()
     {
-        return view ('midtrans.unfinish');
+        return view('midtrans.unfinish');
     }
 
     public function error()
     {
-        return view ('midtrans.error');
+        return view('midtrans.error');
     }
-
 }
